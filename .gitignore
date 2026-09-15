@@ -8,7 +8,8 @@ pytest-cache-files-*/
 *.pyc
 *.tsbuildinfo
 .env
-.env.local
+.env.*
+!.env.example
 test-results/
 playwright-report/
 *.log

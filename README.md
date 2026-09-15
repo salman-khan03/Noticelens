@@ -29,6 +29,15 @@ npm ci
 cd ..
 ```
 
+Create local environment files from the committed, non-secret templates:
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+Copy-Item frontend/.env.example frontend/.env.local
+```
+
+`backend/.env` is loaded by the typed FastAPI settings module regardless of the current working directory. Next.js loads `frontend/.env.local`; `API_URL` remains server-only and is used by the `/api` proxy. Real `.env*` files are ignored by Git while `.env.example` templates remain tracked.
+
 Terminal 1, project root:
 
 ```powershell
@@ -70,8 +79,8 @@ Playwright's local config uses Windows venv paths; replace its backend command o
 
 ## Deployment
 
-- Frontend: import `frontend/` into Vercel; set server-only `API_URL` to your backend HTTPS origin. No secrets are sent to the browser.
-- Backend: deploy the root-context `backend/Dockerfile` to Render or a comparable container host. Set `ALLOWED_ORIGINS` to your frontend origin. Health check: `/health`.
+- Frontend: import `frontend/` into Vercel; set server-only `API_URL` to the backend HTTPS origin, with no path or trailing slash. No secrets are sent to the browser.
+- Backend: deploy the root-context `backend/Dockerfile` to Render or a comparable container host. Set `APP_ENV=production` and `ALLOWED_ORIGINS` to the exact frontend origin. Wildcards and origins containing paths are rejected. Health check: `/health`.
 - Add an edge request-size limit, shared rate limiter, isolated parser worker and retention/consent review before opening uploads publicly. The demo intentionally has no auth or document persistence.
 - Optional Neon: `sources/001_sources.sql` creates source-only PostgreSQL full-text search storage. The default app is not connected to Neon; no infrastructure or paid resources were created.
 

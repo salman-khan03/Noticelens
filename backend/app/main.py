@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import time
 from collections import defaultdict, deque
 from typing import Annotated
@@ -11,17 +10,18 @@ from fastapi.responses import JSONResponse
 from starlette.concurrency import run_in_threadpool
 
 from .analysis import analyze
+from .config import get_settings
 from .models import Analysis, Candidate, Claim, TextRequest
 from .parsing import ParseError, parse
 from .proof import ROOT, verify
 
 logging.basicConfig(level=logging.INFO)
+settings = get_settings()
 app = FastAPI(title="NoticeLens", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(
-        ","
-    ),
+    allow_origins=settings.cors_origins,
+    allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
 )
