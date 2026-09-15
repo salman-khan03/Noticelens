@@ -1,0 +1,48 @@
+{
+  "runAt": "2026-09-15T18:53:14.295565+00:00",
+  "cases": [
+    {
+      "scenario": "supported",
+      "expected": "VERIFIED",
+      "actual": "VERIFIED",
+      "passed": true
+    },
+    {
+      "scenario": "invented URL",
+      "expected": "UNVERIFIED",
+      "actual": "UNVERIFIED",
+      "passed": true
+    },
+    {
+      "scenario": "missing jurisdiction",
+      "expected": "HUMAN_REVIEW_REQUIRED",
+      "actual": "HUMAN_REVIEW_REQUIRED",
+      "passed": true
+    },
+    {
+      "scenario": "contradiction",
+      "expected": "CONTRADICTED",
+      "actual": "CONTRADICTED",
+      "passed": true
+    },
+    {
+      "scenario": "unrelated claim with valid citation",
+      "expected": "UNVERIFIED",
+      "actual": "UNVERIFIED",
+      "passed": true
+    },
+    {
+      "scenario": "no citation",
+      "expected": "UNVERIFIED",
+      "actual": "UNVERIFIED",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "total": 6,
+  "unsupportedRejectionRate": 100.0,
+  "citationCoverage": 62.5,
+  "retrievalSuccessRate": 100.0,
+  "elapsedMs": 13.1,
+  "scope": "Six engineered gate checks and three synthetic notices; not a real-world accuracy estimate."
+}
