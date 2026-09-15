@@ -1,5 +1,28 @@
 import { test, expect } from "@playwright/test";
 import path from "node:path";
+
+test("navigation unlocks after analysis and follows the visible section", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const evidence = page.getByRole("link", { name: "Evidence" });
+  await expect(evidence).toHaveAttribute("aria-disabled", "true");
+  await evidence.click({ force: true });
+  await expect(page).not.toHaveURL(/#evidence$/);
+
+  await page.getByRole("button", { name: "Load sample notice" }).click();
+  await expect(
+    page.getByRole("heading", { name: "What happened" }),
+  ).toBeVisible();
+  await expect(evidence).not.toHaveAttribute("aria-disabled", "true");
+
+  await page.locator("#actions").scrollIntoViewIfNeeded();
+  await expect(page.getByRole("link", { name: "Action plan" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+});
+
 test("sample → evidence → reject claim → checklist → export", async ({
   page,
 }) => {

@@ -139,6 +139,14 @@ button:disabled {
   background: #d5e0d0;
   color: var(--green);
 }
+.sidebar nav a[aria-disabled="true"] {
+  color: #8ea59b;
+  cursor: not-allowed;
+}
+.sidebar nav a[aria-disabled="true"]:hover {
+  background: transparent;
+  color: #8ea59b;
+}
 .sidebar-foot {
   margin-top: auto;
   padding: 20px 13px 0;
@@ -918,17 +926,19 @@ footer svg {
     display: none;
   }
   .sidebar nav {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
     margin-top: 15px;
   }
   .sidebar nav a {
     font-size: 11px;
-    gap: 6px;
-    padding: 8px;
+    justify-content: center;
+    padding: 9px 4px;
+    white-space: nowrap;
   }
   .sidebar nav svg {
-    width: 15px;
+    display: none;
   }
   main {
     padding: 20px 16px;

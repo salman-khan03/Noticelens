@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -20,6 +20,14 @@ import { analysisSchema, request, type Analysis } from "@/lib/contracts";
 
 const disclaimer =
   "NoticeLens provides informational assistance and document organization. It is not a law firm and does not provide legal representation or individualized legal advice. Verify important deadlines and decisions with the responsible authority or qualified counsel.";
+
+const navItems = [
+  ["overview", "Overview", Home],
+  ["evidence", "Evidence", FileText],
+  ["actions", "Action plan", ListChecks],
+  ["proof", "Proof Gate", ShieldCheck],
+] as const;
+
 export default function Page() {
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [busy, setBusy] = useState(false);
@@ -32,11 +40,31 @@ export default function Page() {
   const [active, setActive] = useState("overview");
   const file = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+
+  useEffect(() => {
+    if (!analysis) return;
+
+    const sections = navItems
+      .map(([id]) => document.getElementById(id))
+      .filter((section): section is HTMLElement => section !== null);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const current = entries.find((entry) => entry.isIntersecting);
+        if (current?.target.id) setActive(current.target.id);
+      },
+      { rootMargin: "-18% 0px -70% 0px" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [analysis]);
+
   async function run(path: string, init?: RequestInit) {
     setBusy(true);
     setError("");
     setAnalysis(null);
     setChecked([]);
+    setActive("overview");
     try {
       const data = analysisSchema.parse(await request(path, init));
       setAnalysis(data);
@@ -134,22 +162,29 @@ export default function Page() {
           Clear next steps.
         </p>
         <nav aria-label="Main navigation">
-          {[
-            ["overview", "Overview", Home],
-            ["evidence", "Evidence", FileText],
-            ["actions", "Action plan", ListChecks],
-            ["proof", "Proof Gate", ShieldCheck],
-          ].map(([id, label, Icon]) => {
-            const NavIcon = Icon as typeof Home;
+          {navItems.map(([id, label, NavIcon]) => {
+            const unavailable = !analysis && id !== "overview";
             return (
               <a
-                key={id as string}
+                key={id}
                 className={active === id ? "active" : ""}
                 href={`#${id}`}
-                onClick={() => setActive(id as string)}
+                aria-current={active === id ? "page" : undefined}
+                aria-disabled={unavailable || undefined}
+                title={unavailable ? "Available after notice analysis" : undefined}
+                onClick={(event) => {
+                  if (unavailable) {
+                    event.preventDefault();
+                    document
+                      .querySelector(".upload-panel")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    return;
+                  }
+                  setActive(id);
+                }}
               >
                 <NavIcon size={20} />
-                {label as string}
+                <span>{label}</span>
               </a>
             );
           })}
@@ -367,6 +402,7 @@ export default function Page() {
                   setDraft("");
                   setPaste("");
                   setChecked([]);
+                  setActive("overview");
                 }}
               >
                 <X size={15} /> Clear session
