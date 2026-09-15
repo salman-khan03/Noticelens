@@ -5,6 +5,7 @@
 - 23 pytest tests passed: supported rules, unknown claims, invented URL, missing/foreign jurisdiction, exact-quote tampering, mismatched sources, stale/corrupt sources, real PDF upload, unknown notice, text injection, missing OCR recovery, rate limiting and cache headers.
 - 2 Vitest contract tests passed.
 - 4 Playwright scenarios passed across runs: full synthetic workflow and JSON download; mobile overflow; real PDF upload and corrupt-upload recovery; deposit contradiction and print-media evidence visibility.
+- The full Playwright suite passed again after adding provenance and privacy exports: 4/4 scenarios in 11.2 seconds.
 - ESLint and strict TypeScript passed. Production Next.js build passed. Ruff passed.
 - npm install/audit reported zero known vulnerabilities after upgrading Next.js to 16.3.5 and Vitest to 5.0.1.
 - Evaluation: 6/6 engineered gate cases passed; three synthetic notices yielded 62.5% citation coverage. See the generated JSON for exact timestamps and measured latency. These numbers do not measure real-world accuracy.
@@ -18,6 +19,7 @@ Primary UI verification used the Codex in-app browser, not a Playwright fallback
 - Design reference: `design-concept.png`, 1536×1024.
 - Desktop viewport requested: 1536×1024. `desktop.png` is the browser capture (scrollbar/chrome reduces usable area).
 - Mobile viewport requested: 390×844. `mobile.png` and `mobile-evidence.png` show upload and populated evidence states. No horizontal overflow in the automated mobile check.
+- `provenance-2026.png` shows the implemented receipt, source age, human-review status, audit stages, and integrity digests in the 1536×1024 browser viewport.
 
 ## Fidelity ledger
 
