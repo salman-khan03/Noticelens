@@ -25,6 +25,10 @@ def test_synthetic_flow(client):
     assert a["metrics"]["citationCoverage"] == 66.7
     assert any("September 18" in f["value"] for f in a["facts"])
     assert a["actions"] and a["draft"]
+    assert len(a["provenance"]["analysisSha256"]) == 64
+    assert a["provenance"]["reviewStatus"] == "HUMAN_REVIEW_REQUIRED"
+    assert a["provenance"]["auditTrail"][-1]["stage"] == "CLAIMS_VERIFIED"
+    assert "Names or property address" in a["privacyFindings"]
 
 
 def test_bad_upload(client):

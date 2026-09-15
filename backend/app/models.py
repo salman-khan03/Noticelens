@@ -56,6 +56,22 @@ class Metrics(BaseModel):
     humanReviewRequired: bool
 
 
+class AuditEvent(BaseModel):
+    stage: Literal["RECEIVED", "EXTRACTED", "SOURCES_SELECTED", "CLAIMS_VERIFIED"]
+    detail: str
+
+
+class ProvenanceReceipt(BaseModel):
+    policyVersion: str
+    sourceManifestSha256: str
+    analysisSha256: str
+    sourceSnapshotAgeDays: int | None
+    inputIsolation: Literal["UNTRUSTED_DOCUMENT_DATA"]
+    persistence: Literal["REQUEST_ONLY"]
+    reviewStatus: Literal["HUMAN_REVIEW_REQUIRED"]
+    auditTrail: list[AuditEvent]
+
+
 class Analysis(BaseModel):
     id: str
     noticeType: str
@@ -73,3 +89,5 @@ class Analysis(BaseModel):
     text: str
     elapsedMs: float
     analyzedAt: str
+    privacyFindings: list[str]
+    provenance: ProvenanceReceipt

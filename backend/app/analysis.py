@@ -1,15 +1,39 @@
+import hashlib
+import json
 import logging
 import re
 import time
 import uuid
 from datetime import datetime, timezone
 
-from .models import Analysis, Candidate, Fact, Metrics
-from .proof import verify
+from .models import Analysis, AuditEvent, Candidate, Fact, Metrics, ProvenanceReceipt
+from .proof import SOURCES, verify
 from .providers import RulesProvider
 from .retrieval import retrieve
 
 DATE = r"(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}|\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{2,4}"
+POLICY_VERSION = "proof-gate/2026.1"
+
+
+def _privacy_findings(text: str) -> list[str]:
+    findings = []
+    checks = [
+        (r"\b\d{3}-\d{2}-\d{4}\b", "Possible Social Security number"),
+        (r"\b(?:\d[ -]*?){13,19}\b", "Possible payment-card or account number"),
+        (r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", "Email address"),
+        (r"\b(?:\+?1[-. ]?)?\(?\d{3}\)?[-. ]?\d{3}[-. ]?\d{4}\b", "Phone number"),
+        (r"(?im)^\s*(?:To|From|Property):\s*.+$", "Names or property address"),
+    ]
+    for pattern, label in checks:
+        if re.search(pattern, text, re.IGNORECASE):
+            findings.append(label)
+    return findings
+
+
+def _sha256(value: object) -> str:
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
+    ).hexdigest()
 
 
 def analyze(text: str, jurisdiction: str | None, synthetic=False, method="Pasted text") -> Analysis:
@@ -89,6 +113,28 @@ def analyze(text: str, jurisdiction: str | None, synthetic=False, method="Pasted
     ]
     draft = "DRAFT FOR YOUR REVIEW — NOT SENT\n\nTo [recipient],\n\nI am writing about the notice dated [confirm date] concerning [property]. Please provide clarification of the stated issue, the relevant lease provisions, and any supporting records or itemized amounts. Please also confirm the date and method of delivery and the action you are requesting.\n\n[Add only facts you have checked and questions you wish to ask.]\n\nThank you,\n[name]\n\nThis template does not determine your rights or extend any deadline. Review with qualified counsel as appropriate."
     elapsed = round((time.perf_counter() - start) * 1000, 2)
+    analyzed_at = datetime.now(timezone.utc).isoformat()
+    manifest_hash = _sha256([source.model_dump() for source in SOURCES.values()])
+    source_ages = [
+        (datetime.now(timezone.utc) - datetime.fromisoformat(source.retrievedAt)).days
+        for source in sources
+    ]
+    analysis_hash = _sha256(
+        {
+            "inputSha256": hashlib.sha256(text.encode()).hexdigest(),
+            "jurisdiction": jurisdiction,
+            "noticeType": kind,
+            "claims": [
+                {
+                    "id": claim.id,
+                    "status": claim.verificationStatus,
+                    "sourceSha256": claim.source.sha256 if claim.source else None,
+                }
+                for claim in claims
+            ],
+            "policyVersion": POLICY_VERSION,
+        }
+    )
     logging.getLogger("noticelens").info(
         "analysis type=%s retrieved=%d checked=%d blocked=%d elapsed_ms=%s",
         kind,
@@ -121,5 +167,26 @@ def analyze(text: str, jurisdiction: str | None, synthetic=False, method="Pasted
         warnings=warnings,
         text=text,
         elapsedMs=elapsed,
-        analyzedAt=datetime.now(timezone.utc).isoformat(),
+        analyzedAt=analyzed_at,
+        privacyFindings=_privacy_findings(text),
+        provenance=ProvenanceReceipt(
+            policyVersion=POLICY_VERSION,
+            sourceManifestSha256=manifest_hash,
+            analysisSha256=analysis_hash,
+            sourceSnapshotAgeDays=max(source_ages) if source_ages else None,
+            inputIsolation="UNTRUSTED_DOCUMENT_DATA",
+            persistence="REQUEST_ONLY",
+            reviewStatus="HUMAN_REVIEW_REQUIRED",
+            auditTrail=[
+                AuditEvent(stage="RECEIVED", detail="Document accepted as untrusted data."),
+                AuditEvent(stage="EXTRACTED", detail=method),
+                AuditEvent(
+                    stage="SOURCES_SELECTED", detail=f"{len(sources)} approved source snapshot(s)."
+                ),
+                AuditEvent(
+                    stage="CLAIMS_VERIFIED",
+                    detail=f"{supported} supported; {count - supported} blocked.",
+                ),
+            ],
+        ),
     )

@@ -1,4 +1,4 @@
-"""Small deterministic keyword retrieval. PostgreSQL FTS migration is supplied."""
+"""Jurisdiction corpus selection by notice type. PostgreSQL FTS migration is supplied."""
 
 from .proof import SOURCES
 

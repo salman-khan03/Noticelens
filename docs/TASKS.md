@@ -7,6 +7,7 @@
 - [x] Retrieve official source passages with provenance and gate integrity checks.
 - [x] Add closed-world provider protocol, explicit abstention and contradiction fixture.
 - [x] Add tests, measured evaluation, setup/deployment documentation and AI disclosure.
+- [x] Add tamper-evident provenance receipts, source freshness, privacy findings, minimized/full exports, and explicit human-review status.
 - [ ] Connect a consented live model (local rules remain the runnable default).
 - [ ] Provision Neon and enable source-only PostgreSQL retrieval.
 - [ ] Attorney source/applicability review and broader extraction evaluation.

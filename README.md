@@ -12,6 +12,9 @@ A working local prototype for Texas tenant notices: notices to vacate, lease-vio
 - Extracted party/date/amount passages, approved official sources, expandable claim evidence.
 - Gate rejects invented URLs, missing jurisdiction, altered quotes, unsupported claims, stale/tampered sources and a registered contradiction.
 - Per-analysis safety metrics, measured small evaluation, editable informational draft, checklist, JSON export and printable packet.
+- Tamper-evident verification receipts with an analysis digest, source-manifest digest, policy version, source age, and stage-by-stage audit trail.
+- Privacy review that detects common personal-data patterns; export defaults to a minimized packet with a separate explicit full-document option.
+- Human review status stays visible in the receipt and packet, so downstream systems cannot mistake automation for a legal decision.
 - FastAPI/Pydantic API, Zod frontend validation, tests and GitHub Actions workflow.
 
 ## Run locally

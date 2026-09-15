@@ -1,5 +1,5 @@
 {
-  "runAt": "2026-09-15T18:53:14.295565+00:00",
+  "runAt": "2026-09-15T19:02:03.316462+00:00",
   "cases": [
     {
       "scenario": "supported",
@@ -43,6 +43,6 @@
   "unsupportedRejectionRate": 100.0,
   "citationCoverage": 62.5,
   "retrievalSuccessRate": 100.0,
-  "elapsedMs": 13.1,
+  "elapsedMs": 9.48,
   "scope": "Six engineered gate checks and three synthetic notices; not a real-world accuracy estimate."
 }

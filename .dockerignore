@@ -1,0 +1,13 @@
+.git
+.venv
+frontend/node_modules
+frontend/.next
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/pytest-cache-files-*
+frontend/test-results
+docs
+work
+**/.env
+**/.env.local

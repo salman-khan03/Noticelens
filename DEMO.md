@@ -7,6 +7,8 @@
 5. Open “Try to break it.” Run a new unsupported claim against a real citation. It still fails: having a citation is insufficient.
 6. Load the deposit sample. In the challenge field enter exactly “A landlord may retain a security deposit to cover normal wear and tear.” The gate returns CONTRADICTED against §92.104(b). This is an explicitly registered contradiction, not a claim of universal contradiction detection.
 7. Show the measured evaluation, tick a checklist item, edit the response, and download the JSON evidence packet. Print the human-readable packet if desired.
-8. Explain the remaining work honestly: attorney corpus review, consented model extraction, Neon integration and hardened public deployment. Do not describe the provider as live AI, general entailment verification, or legal advice.
+8. Open the verification receipt. Point out the policy version, source age, analysis digest, source-manifest digest, ordered audit trail, and mandatory human-review status.
+9. Download the privacy-safe packet first. Explain that sharing the full-document packet requires a separate explicit action and that pattern-based redaction still needs review.
+10. Explain the remaining work honestly: attorney corpus review, consented model extraction, Neon integration and hardened public deployment. Do not describe the provider as live AI, general entailment verification, or legal advice.
 
 Useful failure demo: upload a corrupt PDF. The UI offers a recoverable error and paste-text path. Missing OCR is also recoverable. Do not upload real tenant information for a public judging demo.

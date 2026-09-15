@@ -1,0 +1,33 @@
+name: Bug report
+description: Report a reproducible product defect without sharing personal legal documents.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include real notices, names, addresses, credentials, or other personal data. Use a synthetic example."
+  - type: textarea
+    id: behavior
+    attributes:
+      label: What happened?
+      description: Include the expected behavior and a synthetic reproduction.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Document parsing, Fact extraction, Evidence retrieval, Proof Gate, Privacy export, Accessibility, Other]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I used only synthetic or redacted information.
+          required: true

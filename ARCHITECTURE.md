@@ -14,6 +14,8 @@ The frontend uses TypeScript strict mode, Zod at the API boundary, Tailwind 4 an
 4. General information has an exact claim, jurisdiction, rule ID, source ID, URL, supporting passage and retrieval time. The gate checks the source hash, source age, exact quote and exact approved mapping. Source hash checks detect accidental mutation, not a malicious repository maintainer.
 5. Arbitrary paraphrases abstain. A real citation cannot make an unrelated statement pass. A known prohibition reversal returns CONTRADICTED. This is deliberately a closed-world verifier, not general natural-language entailment.
 6. Applicability is never verified. A VERIFIED label means only that the **general-information statement** matches the curated source mapping. Qualified legal review of both corpus and case remains necessary.
+7. Each result carries a `proof-gate/2026.1` receipt: source-manifest hash, analysis hash, source age, input-isolation label, retention mode, mandatory review status, and ordered processing events.
+8. Packet export defaults to local pattern-based minimization. Full-document export remains available as an explicit secondary action. Both formats include a packet digest for later integrity checking.
 
 ## Status semantics
 
@@ -31,11 +33,21 @@ The default corpus is three official statute section snapshots retrieved Septemb
 
 Tenant notices and results are held only for the request and in browser memory. No analytics, cookies, localStorage, or document database. FastAPI UploadFile can spool to a temporary file while parsing multipart uploads; it is closed after the request. Exported packets contain the user's notice text and should be treated as private. Frontend clear-session discards text/results from React state; it is not a secure-memory erasure guarantee.
 
+The privacy-safe export removes common names/address fields, email addresses, phone numbers, and identifier patterns before download. Pattern-based redaction is fallible, so the UI tells users to review the file before sharing. Every exported packet includes a SHA-256 digest over its canonical pre-digest payload. This provides tamper evidence; it is not a digital signature or proof of who created the packet.
+
 ## Extensibility
 
 ClaimProvider is a protocol. A future remote provider can propose Pydantic Candidate records but cannot bypass Proof Gate. Add model consent, credential provisioning, structured-output validation, model timeouts and vendor retention review before enabling remote inference. Never present local rules as a live AI model.
 
 For a new jurisdiction, add a separate reviewed source corpus, source selection policy, rules and adversarial fixtures. Do not simply add a state to the UI selector. Federal overlays and case applicability need their own review layer.
+
+## 2026–2027 readiness profile
+
+- **AI governance:** provenance, documented model/rules identity, scoped evaluation, human oversight, and abstention follow the direction of NIST AI RMF and its Generative AI Profile.
+- **LLM security:** untrusted-document isolation, closed-world URLs, strict typed outputs, bounded uploads/requests, and zero downstream agency address the product-relevant OWASP GenAI risks. A future model remains unable to mark its own output verified.
+- **Privacy:** request-only processing, no accounts/analytics, redacted export by default, explicit full export, and no remote inference in the default build.
+- **Interoperability:** machine-readable receipts and evidence packets use stable status names, hashes, timestamps, source identities, and policy versions. A production version should add JSON Schema publication and signed receipts.
+- **Operational resilience:** health endpoint, no-store responses, source-age gate, recoverable parsing states, rate limits, CI, and deterministic synthetic fixtures. Production still needs shared rate limiting, parser isolation, observability, backup/restore tests, and incident procedures.
 
 ## Deployment boundary
 
