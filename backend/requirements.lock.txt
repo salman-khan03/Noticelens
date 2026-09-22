@@ -24,7 +24,7 @@ pytesseract==0.3.13
 pytest==9.1.1
 python-dotenv==1.2.3
 python-multipart==0.0.32
-ruff==0.16.7
+ruff==0.16.8
 starlette==1.6.0
 typing-inspection==0.4.4
 typing_extensions==4.16.0
