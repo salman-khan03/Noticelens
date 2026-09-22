@@ -9,4 +9,4 @@ pytesseract>=0.3.13
 httpx>=0.28
 pytest>=8
 ruff>=0.11
-psycopg[binary]>=3.2
+psycopg[binary]>=3.3.6
